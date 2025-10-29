@@ -72,14 +72,15 @@ class Herbivore(Animal):
             
         plant_target = ecosystem.get_adjacent_type(self.x, self.y, "🌳")
         #有吃则吃
-        if plant_target: 
+        if plant_target: #标记修改
             target_organism = random.choice(plant_target)
-            ecosystem.remove_list.append(target_organism)
-            self.x = target_organism.x
-            self.y = target_organism.y
-            self.energy += HERBIVORE_ENERGY_EAT_GAIN
-            return
-        #繁殖 # 如果临近没有空格呢？？？
+            if not ecosystem.is_in_remove_list(target_organism):
+                ecosystem.remove_list.append(target_organism)
+                self.x = target_organism.x
+                self.y = target_organism.y
+                self.energy += HERBIVORE_ENERGY_EAT_GAIN
+                return
+        #繁殖 
         elif self.energy > HERBIVORE_REPRODUCE_ENERGY and random.random() < HERBIVORE_REPRODUCE_CHANCE:
             empty_cells = ecosystem.get_adjacent_empty_cells(self.x, self.y) 
             if empty_cells:
@@ -103,13 +104,14 @@ class Carnivore(Animal):
             return
         
         hunt_target = ecosystem.get_adjacent_type(self.x, self.y, "🐑")
-        if hunt_target:
+        if hunt_target: #标记修改  
             target_organism = random.choice(hunt_target)
-            ecosystem.remove_list.append(target_organism)
-            self.x = target_organism.x
-            self.y = target_organism.y
-            self.energy += CARNIVORE_ENERGY_EAT_GAIN
-            return
+            if not ecosystem.is_in_remove_list(target_organism):
+                ecosystem.remove_list.append(target_organism)
+                self.x = target_organism.x
+                self.y = target_organism.y
+                self.energy += CARNIVORE_ENERGY_EAT_GAIN
+                return
         elif self.energy > CARNIVORE_REPRODUCE_ENERGY and random.random() < CARNIVORE_REPRODUCE_CHANCE:
             empty_cells = ecosystem.get_adjacent_empty_cells(self.x, self.y)
             if empty_cells:

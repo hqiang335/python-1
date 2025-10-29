@@ -123,3 +123,9 @@ class Ecosystem:
                         query.append(organism)  # 返回生物对象而不是坐标
         return query
 
+
+    def is_in_remove_list(self, organism):
+        for remove_organism in self.remove_list:
+            if remove_organism.x == organism.x and remove_organism.y == organism.y:
+                return True
+        return False  
