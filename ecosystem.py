@@ -1,7 +1,3 @@
-# ecosystem.py
-from typing import Any
-
-
 import random
 import time
 from organisms import Plant, Herbivore, Carnivore
@@ -17,7 +13,7 @@ class Ecosystem:
         self.n_herbivores = n_herbivores
         self.n_carnivores = n_carnivores
 
-    def initialize(self, n_plants, n_herbivores, n_carnivores): #输入的动物或植物太多超过格子数？
+    def initialize(self, n_plants, n_herbivores, n_carnivores):
         coords = [(x, y) for x in range(self.grid_size) for y in range(self.grid_size)]
         random.shuffle(coords)
         for i in range(n_plants):
@@ -31,35 +27,23 @@ class Ecosystem:
             self.organisms.append(Carnivore(x, y))
 
     def run(self, total_ticks):
-        random.seed(42)#临时debug专用种子
+        # random.seed(42)#临时debug种子
         self.initialize(self.n_plants, self.n_herbivores, self.n_carnivores)
         grid = [['. ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
         self.display()
         for tick in range(1,total_ticks+1):
             self.tick = tick
             random.shuffle(self.organisms)
-            count_herbivore = 0
-            count_carnivore = 0
-            count_plant = 0
+
             for organism in self.organisms:
                 organism.update(self)
-                if organism.symbol == "🐑":
-                    count_herbivore += 1
-                if organism.symbol == "🐺":
-                    count_carnivore += 1
-                if organism.symbol == "🌳":
-                    count_plant += 1
-            print(f"tick {tick} count_herbivore: {count_herbivore}, count_carnivore: {count_carnivore}, count_plant: {count_plant}")
 
-
-            for remove_organism in self.remove_list:#去重？？？
-                print(f"tick {tick} remove_organism: {remove_organism.symbol} at ({remove_organism.x}, {remove_organism.y})")
-                # self.organisms.remove(remove_organism)
+            for remove_organism in self.remove_list:
+                # print(f"tick {tick} remove_organism: {remove_organism.symbol} at ({remove_organism.x}, {remove_organism.y})")
                 if remove_organism in self.organisms:
                     self.organisms.remove(remove_organism)
                 else:
-                    print(f"警告: 找不到要移除的生物 {remove_organism.symbol} at ({remove_organism.x}, {remove_organism.y})")
-                    # print(f"生物：{self.get_organism_at(remove_organism.x, remove_organism.y)} ,能量:{self.get_organism_at(remove_organism.x, remove_organism.y).energy} ")
+                    print(f"warning: cannot find the organism {remove_organism.symbol} at ({remove_organism.x}, {remove_organism.y})")
             for add_organism in self.add_list:
                 self.organisms.append(add_organism)
             self.remove_list = []
@@ -85,11 +69,6 @@ class Ecosystem:
         for organism in self.organisms:
             if organism.x == x and organism.y == y:
                 return organism
-            # if organism.x != x or organism.y != y:
-            #     continue
-            # else:
-            #     oganism.append(organism)
-            #     return oganism
         return None
 
     def get_adjacent_empty_cells(self,x, y):
@@ -123,7 +102,7 @@ class Ecosystem:
                         query.append(organism)  # 返回生物对象而不是坐标
         return query
 
-
+    #防止“抢食重叠bug”出现，确保同一坐标只登记一次
     def is_in_remove_list(self, organism):
         for remove_organism in self.remove_list:
             if remove_organism.x == organism.x and remove_organism.y == organism.y:
