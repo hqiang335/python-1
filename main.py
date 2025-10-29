@@ -9,17 +9,17 @@ def get_int(prompt):
                 raise ValueError
             return val
         except ValueError:
-            print("请输入一个正整数！")
+            print("Please enter a positive integer!")
 
 def main():
-    grid = get_int("请输入网格大小：")
-    n_plant = get_int("请输入初始植物数量：")
-    n_herb = get_int("请输入初始食草动物数量：")
-    n_carn = get_int("请输入初始食肉动物数量：")
-    ticks = get_int("请输入模拟总时长（tick 数）：")
+    grid = get_int("Enter n for n*n grid:")
+    n_plant = get_int("Enter initial number of Plants🌳:")
+    n_herb = get_int("Enter initial number of Herbivores🐑:")
+    n_carn = get_int("Enter initial number of Carnivores🐺:")
+    ticks = get_int("Enter total number of running ticks:")
 
     if n_plant + n_herb + n_carn > grid * grid:
-        print("错误：生物数量超过网格容量！")
+        print("Error: The number of organisms exceeds the grid capacity!")
         return
 
     eco = Ecosystem(grid, n_plant, n_herb, n_carn)

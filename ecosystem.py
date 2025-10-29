@@ -33,18 +33,24 @@ class Ecosystem:
     def run(self, total_ticks):
         random.seed(42)#临时debug专用种子
         self.initialize(self.n_plants, self.n_herbivores, self.n_carnivores)
-        print(f"Initialization:")
         grid = [['. ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
-        for organism in self.organisms:
-            grid[organism.x][organism.y] = organism.symbol
-        for row in grid:
-            print(" ".join(row))
-        # self.display()
-        for tick in range(total_ticks):
+        self.display()
+        for tick in range(1,total_ticks+1):
             self.tick = tick
             random.shuffle(self.organisms)
+            count_herbivore = 0
+            count_carnivore = 0
+            count_plant = 0
             for organism in self.organisms:
                 organism.update(self)
+                if organism.symbol == "🐑":
+                    count_herbivore += 1
+                if organism.symbol == "🐺":
+                    count_carnivore += 1
+                if organism.symbol == "🌳":
+                    count_plant += 1
+            print(f"tick {tick} count_herbivore: {count_herbivore}, count_carnivore: {count_carnivore}, count_plant: {count_plant}")
+
 
             for remove_organism in self.remove_list:#去重？？？
                 print(f"tick {tick} remove_organism: {remove_organism.symbol} at ({remove_organism.x}, {remove_organism.y})")
@@ -53,6 +59,7 @@ class Ecosystem:
                     self.organisms.remove(remove_organism)
                 else:
                     print(f"警告: 找不到要移除的生物 {remove_organism.symbol} at ({remove_organism.x}, {remove_organism.y})")
+                    # print(f"生物：{self.get_organism_at(remove_organism.x, remove_organism.y)} ,能量:{self.get_organism_at(remove_organism.x, remove_organism.y).energy} ")
             for add_organism in self.add_list:
                 self.organisms.append(add_organism)
             self.remove_list = []
@@ -62,7 +69,10 @@ class Ecosystem:
 
     
     def display(self):
-        print(f"--------------Tick {self.tick}---------------")
+        if self.tick == 0:
+            print(f"--------------Initialization: Tick 0---------------")
+        else:
+            print(f"--------------Tick {self.tick}---------------")
         grid = [['. ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
         for organism in self.organisms:
             grid[organism.x][organism.y] = organism.symbol
@@ -71,9 +81,15 @@ class Ecosystem:
 
     def get_organism_at(self, x, y):
         #获取指定坐标处的生物对象（如果有的话），否则返回None
+        oganism = []
         for organism in self.organisms:
             if organism.x == x and organism.y == y:
                 return organism
+            # if organism.x != x or organism.y != y:
+            #     continue
+            # else:
+            #     oganism.append(organism)
+            #     return oganism
         return None
 
     def get_adjacent_empty_cells(self,x, y):

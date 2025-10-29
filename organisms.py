@@ -70,10 +70,10 @@ class Herbivore(Animal):
             ecosystem.remove_list.append(self)
             return
             
-        target = ecosystem.get_adjacent_type(self.x, self.y, "🌳")
+        plant_target = ecosystem.get_adjacent_type(self.x, self.y, "🌳")
         #有吃则吃
-        if target: 
-            target_organism = random.choice(target)
+        if plant_target: 
+            target_organism = random.choice(plant_target)
             ecosystem.remove_list.append(target_organism)
             self.x = target_organism.x
             self.y = target_organism.y
@@ -102,9 +102,9 @@ class Carnivore(Animal):
             ecosystem.remove_list.append(self)
             return
         
-        target = ecosystem.get_adjacent_type(self.x, self.y, "🐑")
-        if target:
-            target_organism = random.choice(target)
+        hunt_target = ecosystem.get_adjacent_type(self.x, self.y, "🐑")
+        if hunt_target:
+            target_organism = random.choice(hunt_target)
             ecosystem.remove_list.append(target_organism)
             self.x = target_organism.x
             self.y = target_organism.y
